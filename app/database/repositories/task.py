@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.database.models import Task
@@ -19,7 +19,8 @@ class TaskRepository:
         return list(self.session.scalars(stmt).all())
 
     def count_by_user(self, user_id: int) -> int:
-        return len(self.list_by_user(user_id=user_id, offset=0, limit=10_000))
+        stmt = select(func.count(Task.id)).where(Task.user_id == user_id)
+        return int(self.session.scalar(stmt) or 0)
 
     def get_user_task(self, user_id: int, task_id: int) -> Task | None:
         stmt = select(Task).where(Task.id == task_id, Task.user_id == user_id)

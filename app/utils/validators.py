@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from app.database.models.task import TASK_STATUSES
 
@@ -38,5 +38,5 @@ def validate_create_payload(payload: dict) -> TaskCreateSchema:
 def validate_update_payload(payload: dict) -> TaskUpdateSchema:
     model = TaskUpdateSchema.model_validate(payload)
     if model.model_dump(exclude_none=True) == {}:
-        raise ValidationError.from_exception_data("TaskUpdateSchema", [])
+        raise ValueError("Nenhum campo foi informado para atualização")
     return model

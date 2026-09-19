@@ -50,7 +50,7 @@ class TaskService:
         task = self.get_task_or_raise(user_id=user_id, task_id=task_id)
         try:
             payload = validate_update_payload(changes)
-        except ValidationError as exc:
+        except (ValidationError, ValueError) as exc:
             raise TaskValidationError(str(exc)) from exc
         updated = self.repository.update(task, **payload.model_dump(exclude_none=True))
         self.session.commit()
